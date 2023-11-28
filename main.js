@@ -20,7 +20,7 @@ const glados = async () => {
     const totalPoint = checkin.list[0].balance
     return [
       `Days ${Number(status.data.leftDays)}`,
-      `${checkin.message}totalPoint${Number(totalPoint)}`,
+      `totalPoint${Number(totalPoint)} ${checkin.message} `,
     ]
   } catch (error) {
     return [
