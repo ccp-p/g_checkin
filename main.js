@@ -18,9 +18,13 @@ const glados = async () => {
     }).then((r) => r.json())
 
     const totalPoint = checkin.list[0].balance
+
+    // const 252483344713 / 1073741824 ≈ 235.09 GB
+    const traffic = `${Number(status.data.traffic / 1073741824).toFixed(2)}GB`
+
     return [
       `Days ${Number(status.data.leftDays)}`,
-      `totalPoint${Number(totalPoint)} ${checkin.message} `,
+      `TotalPoint ${Number(totalPoint)},Traffic %{traffic} ${checkin.message} `,
     ]
   } catch (error) {
     return [
