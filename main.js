@@ -16,9 +16,11 @@ const glados = async () => {
       method: 'GET',
       headers,
     }).then((r) => r.json())
+
+    const totalPoint = checkin.list[0].balance
     return [
-      `OK ${checkin.message}`,
       `Days ${Number(status.data.leftDays)}`,
+      `${checkin.message}totalPoint${Number(totalPoint)}`,
     ]
   } catch (error) {
     return [
@@ -38,7 +40,7 @@ const notify = async (contents) => {
     body: JSON.stringify({
       token,
       title: contents[0],
-      content: contents.join('<br>'),
+      content: contents[1],
       template: 'markdown',
     }),
   })
