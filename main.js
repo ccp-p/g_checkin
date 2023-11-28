@@ -24,7 +24,7 @@ const glados = async () => {
 
     return [
       `Days ${Number(status.data.leftDays)}`,
-      `TotalPoint ${Number(totalPoint)},Traffic %{traffic} ${checkin.message} `,
+      `TotalPoint ${Number(totalPoint)},Traffic ${traffic} ${checkin.message} `,
     ]
   } catch (error) {
     return [
