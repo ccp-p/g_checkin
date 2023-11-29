@@ -31,9 +31,9 @@ const glados = async () => {
     const restTrafficGB = Number(restTraffic / 1073741824).toFixed(2)
 
     const restTrafficDays = Number(restTrafficGB / diff).toFixed(2)
-    
+
     return [
-      `${Number(status.data.leftDays)} rest/gb ${restTrafficDays}`,
+      `${Number(status.data.leftDays)}  ${restTrafficDays}`,
       `p ${Number(totalPoint)},Traffic ${usedTraffic} End ${nextEndDate} `,
     ]
   } catch (error) {
