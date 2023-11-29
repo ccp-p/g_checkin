@@ -35,7 +35,7 @@ const glados = async () => {
     
    console.log('restTrafficDays====',restTrafficDays)
     return [
-      `${Number(status.data.leftDays)}  ${restTrafficDays}`,
+      `${Number(status.data.leftDays)}天  剩${restTrafficDays}Gb/D`,
       `${Number(totalPoint)}point, ${usedTraffic} End ${nextEndDate} `,
     ]
   } catch (error) {
