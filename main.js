@@ -20,14 +20,21 @@ const glados = async () => {
     const totalPoint = checkin.list[0].balance
 
     // const 252483344713 / 1073741824 ≈ 235.09 GB
-    const traffic = `${Number(status.data.traffic / 1073741824).toFixed(2)}GB`
+    const usedTraffic = `${Number(status.data.traffic / 1073741824).toFixed(2)}GB`
 
     const nextEndDate = getNextEndDate(11)
+    
+    const diff = getDaysDiff(nextEndDate)
+    // 252483344713
+    const restTraffic = 500000000000 - status.data.traffic
 
+    const restTrafficGB = Number(restTraffic / 1073741824).toFixed(2)
+
+    const restTrafficDays = Number(restTrafficGB / diff).toFixed(2)
     
     return [
-      `Days ${Number(status.data.leftDays)}`,
-      `p ${Number(totalPoint)},Traffic ${traffic} End ${nextEndDate} `,
+      `${Number(status.data.leftDays)} rest/gb ${restTrafficDays}`,
+      `p ${Number(totalPoint)},Traffic ${usedTraffic} End ${nextEndDate} `,
     ]
   } catch (error) {
     return [
@@ -36,7 +43,7 @@ const glados = async () => {
       `<${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}>`,
     ]
   }
-}'
+}
 
 function getNextEndDate(day) {
   // 创建一个表示启始月结日的 Date 对象
@@ -64,6 +71,26 @@ function getNextEndDate(day) {
   return `${ye}-${mo}-${da}`;
 }
 
+function getDaysDiff(nextEndDate) {
+  // 创建一个表示当前日期的 Date 对象，并设置时区为上海
+  let currentDate = new Date();
+  let dtf = new Intl.DateTimeFormat('en-US', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    timeZone: 'Asia/Shanghai'
+  });
+  let [{ value: mo },,{ value: da },,{ value: ye }] = dtf.formatToParts(currentDate);
+  currentDate = new Date(`${ye}-${mo}-${da}`);
+
+  let endDate = new Date(nextEndDate)
+
+  // 计算两个日期之间的差值（以毫秒为单位），然后转换为天数
+  let diff = endDate - currentDate;
+  let daysDiff = Math.ceil(diff / (1000 * 60 * 60 * 24));
+
+  return daysDiff;
+}
 
 
 
