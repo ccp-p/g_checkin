@@ -22,9 +22,12 @@ const glados = async () => {
     // const 252483344713 / 1073741824 ≈ 235.09 GB
     const traffic = `${Number(status.data.traffic / 1073741824).toFixed(2)}GB`
 
+    const nextEndDate = getNextEndDate(11)
+
+    
     return [
       `Days ${Number(status.data.leftDays)}`,
-      `TotalPoint ${Number(totalPoint)},Traffic ${traffic} ${checkin.message} `,
+      `p ${Number(totalPoint)},Traffic ${traffic} End ${nextEndDate} `,
     ]
   } catch (error) {
     return [
@@ -33,7 +36,38 @@ const glados = async () => {
       `<${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}>`,
     ]
   }
+}'
+
+function getNextEndDate(day) {
+  // 创建一个表示启始月结日的 Date 对象
+  let thisMonthEndDate = new Date();
+  thisMonthEndDate.setDate(day);
+
+  // 增加月份
+  thisMonthEndDate.setMonth(thisMonthEndDate.getMonth() + 1);
+
+  // 获取新的日期
+  let nextMonthEndDate = thisMonthEndDate;
+
+  // 创建一个 Intl.DateTimeFormat 对象，用于将日期转换为上海时区的日期
+  let dtf = new Intl.DateTimeFormat('en-US', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    timeZone: 'Asia/Shanghai'
+  });
+
+  // 将日期转换为上海时区的日期
+  let [{ value: mo },,{ value: da },,{ value: ye }] = dtf.formatToParts(nextMonthEndDate);
+
+  // 返回上海时区的日期
+  return `${ye}-${mo}-${da}`;
 }
+
+
+
+
+
 
 const notify = async (contents) => {
   const token = process.env.NOTIFY
