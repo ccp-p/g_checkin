@@ -23,10 +23,11 @@ const glados = async () => {
     // const 252483344713 / 1073741824 ≈ 235.09 GB
     const usedTraffic = `${Number(status.data.traffic / 1073741824).toFixed(2)}GB`
 
-    const nextEndDate = getNextEndDate(11)
-    
-    const diff = getDaysDiff(nextEndDate)
+    const nextEndDate = getNextEndDate(1)
 
+    console.log('nextEndDate====',nextEndDate)
+    const diff = getDaysDiff(nextEndDate)
+    console.log('diff====',diff)
     const restTraffic = 500 - Number(usedTraffic.replace('GB',''))
 
       console.log('restTraffic====',restTraffic);
