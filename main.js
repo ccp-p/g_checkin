@@ -1,6 +1,7 @@
 import{getDaysDiff,getNextEndDate} from './utils.js'
 const glados = async () => {
   const cookie = process.env.GLADOS
+  
   if (!cookie) return
   try {
     const headers = {
