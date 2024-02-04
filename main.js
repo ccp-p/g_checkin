@@ -9,11 +9,19 @@ const glados = async () => {
       'referer': 'https://glados.rocks/console/checkin',
       'user-agent': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)',
     }
+    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+    const randSleepInRange = (min, max) => sleep(Math.random() * (max - min) + min)
+    const oneMinute = 60000
+    const randSleep = () => randSleepInRange(oneMinute, 5*oneMinute); // 1 to 5 minutes in milliseconds
+
+    await randSleep()
     const checkin = await fetch('https://glados.rocks/api/user/checkin', {
       method: 'POST',
       headers: { ...headers, 'content-type': 'application/json' },
       body: '{"token":"glados.one"}',
     }).then((r) => r.json())
+
+
     const status = await fetch('https://glados.rocks/api/user/status', {
       method: 'GET',
       headers,
