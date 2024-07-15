@@ -63,8 +63,11 @@ const glados = async () => {
 
 
 const notify = async (contents) => {
+  console.log('notify start')
   const token = process.env.NOTIFY
   if (!token || !contents) return
+  try {
+    
   await fetch(`https://www.pushplus.plus/send`, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
@@ -75,6 +78,10 @@ const notify = async (contents) => {
       template: 'markdown',
     }),
   })
+  }catch (error) {
+    console.log('notify end',error)
+  }
+  
 }
 
 const main = async () => {
