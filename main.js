@@ -11,7 +11,7 @@ const glados = async () => {
     }
     const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
     const randSleepInRange = (min, max) => sleep(Math.random() * (max - min) + min)
-    const oneMinute = 60000
+    const oneMinute = 30000
     const randSleep = () => randSleepInRange(oneMinute, 5*oneMinute); // 1 to 5 minutes in milliseconds
 
     await randSleep()
