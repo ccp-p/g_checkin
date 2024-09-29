@@ -32,10 +32,10 @@ const glados = async () => {
     const status = await fetch('https://glados.rocks/api/user/status', {
       method: 'GET',
       headers,
-    }).then(async (e)=>
+    }).then( (e)=>e.json()
       
-      console.log('status statusjson', e.json()
-                 )
+      
+            
            
            )
 
