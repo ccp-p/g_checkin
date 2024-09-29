@@ -11,7 +11,7 @@ const glados = async () => {
     }
     const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
     const randSleepInRange = (min, max) => sleep(Math.random() * (max - min) + min)
-    const oneMinute = 30000
+    const oneMinute = 1
     const randSleep = () => randSleepInRange(oneMinute, 5*oneMinute); // 1 to 5 minutes in milliseconds
 
     await randSleep()
@@ -19,9 +19,9 @@ const glados = async () => {
       method: 'POST',
       headers: { ...headers, 'content-type': 'application/json' },
       body: '{"token":"glados.one"}',
-    }).then((e)=>
+    }).then(async(e)=>
       
-      console.log('checkin checkinjson',e,e.json()
+      console.log('checkin checkinjson',e,await e.json()
                  )
            
            )
@@ -32,9 +32,9 @@ const glados = async () => {
     const status = await fetch('https://glados.rocks/api/user/status', {
       method: 'GET',
       headers,
-    }).then((e)=>
+    }).then(async (e)=>
       
-      console.log('status statusjson',e,e.json()
+      console.log('status statusjson',e,await e.json()
                  )
            
            )
