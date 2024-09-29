@@ -19,17 +19,27 @@ const glados = async () => {
       method: 'POST',
       headers: { ...headers, 'content-type': 'application/json' },
       body: '{"token":"glados.one"}',
-    })
+    }).then((e)=>
+      
+      console.log('checkin checkinjson',e,e.json()
+                 )
+           
+           )
 
-    console.log('checkin',checkin.json())
+
 
 
     const status = await fetch('https://glados.rocks/api/user/status', {
       method: 'GET',
       headers,
-    })
+    }).then((e)=>
+      
+      console.log('status statusjson',e,e.json()
+                 )
+           
+           )
 
-    console.log('status',status.json())
+  
 
     const totalPoint = checkin.list[0].balance
 
