@@ -19,12 +19,7 @@ const glados = async () => {
       method: 'POST',
       headers: { ...headers, 'content-type': 'application/json' },
       body: '{"token":"glados.one"}',
-    }).then(async(e)=>
-      
-      console.log('checkin checkinjson',e,await e.json()
-                 )
-           
-           )
+    }).then((e)=> e.json()  )
 
 
 
