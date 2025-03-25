@@ -51,7 +51,7 @@ const glados = async () => {
       'cookie': cookie,
       'referer': 'https://glados.space/console/checkin',
        "origin": "https://glados.space",
-      'user-agent': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)',
+      'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 Edg/134.0.0.0',
     }
     const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
     const randSleepInRange = (min, max) => sleep(Math.random() * (max - min) + min)
