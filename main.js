@@ -84,7 +84,7 @@ const glados = async () => {
 
     // 使用重试机制进行 status 请求
     const status = await retryOperation(async () => {
-      const response = await fetch('https://glados./api/user/status', {
+      const response = await fetch('https://glados.space/api/user/checkin', {
         method: 'GET',
         headers,
       });
