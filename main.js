@@ -24,10 +24,27 @@ async function retryOperation(operation, maxRetries = 3) {
   throw new Error(`操作失败，已重试 ${maxRetries} 次: ${lastError.message}`);
 }
 
+// 安全获取嵌套对象属性的辅助函数
+function safeGet(obj, path, defaultValue = null) {
+  if (!obj) return defaultValue;
+  
+  const keys = Array.isArray(path) ? path : path.split('.');
+  let result = obj;
+  
+  for (const key of keys) {
+    if (result == null || typeof result !== 'object') {
+      return defaultValue;
+    }
+    result = result[key];
+  }
+  
+  return result === undefined ? defaultValue : result;
+}
+
 const glados = async () => {
   const cookie = process.env.GLADOS
   
-  if (!cookie) return
+  if (!cookie) return ['Missing Cookie', 'Please set GLADOS environment variable'];
   
   try {
     const headers = {
@@ -57,6 +74,13 @@ const glados = async () => {
       return response.json();
     });
 
+    // 检查签到响应的完整性
+    if (!checkin || typeof checkin !== 'object') {
+      throw new Error('签到响应格式无效');
+    }
+
+    console.log('签到响应:', JSON.stringify(checkin));
+
     // 使用重试机制进行 status 请求
     const status = await retryOperation(async () => {
       const response = await fetch('https://glados.rocks/api/user/status', {
@@ -71,39 +95,55 @@ const glados = async () => {
       return response.json();
     });
 
-    const totalPoint = checkin.list[0].balance
+    // 安全获取点数，避免未定义错误
+    const totalPoint = safeGet(checkin, ['list', 0, 'balance'], 0);
+    
+    // 安全获取流量信息
+    const trafficBytes = safeGet(status, ['data', 'traffic'], 0);
+    const usedTraffic = `${Number(trafficBytes / 1073741824).toFixed(2)}GB`;
+    
+    // 安全获取剩余天数
+    const leftDays = safeGet(status, ['data', 'leftDays'], 0);
 
-    const usedTraffic = `${Number(status.data.traffic / 1073741824).toFixed(2)}GB`
-
-    const nextEndDate = getNextEndDate(1)
-
-    console.log('nextEndDate====', nextEndDate)
-    const diff = getDaysDiff(nextEndDate)
-    console.log('diff====', diff)
-    const restTraffic = 500 - Number(usedTraffic.replace('GB',''))
-
+    const nextEndDate = getNextEndDate(1);
+    console.log('nextEndDate====', nextEndDate);
+    
+    let diff = 1; // 默认值
+    try {
+      diff = getDaysDiff(nextEndDate);
+      console.log('diff====', diff);
+    } catch (e) {
+      console.error('计算天数差异时出错:', e);
+    }
+    
+    const restTraffic = 500 - Number(usedTraffic.replace('GB',''));
     console.log('restTraffic====', restTraffic);
 
-    const restTrafficDays = Number(restTraffic / diff).toFixed(2)
+    // 防止除以零
+    const restTrafficDays = diff > 0 ? Number(restTraffic / diff).toFixed(2) : '0.00';
+    console.log('restTrafficDays====', restTrafficDays);
     
-    console.log('restTrafficDays====', restTrafficDays)
     return [
-      `${Number(status.data.leftDays)}天  剩${restTrafficDays}Gb/D`,
+      `${Number(leftDays)}天  剩${restTrafficDays}Gb/D`,
       `${Number(totalPoint)}point, ${usedTraffic} End ${nextEndDate} `,
-    ]
+    ];
   } catch (error) {
+    console.error('处理过程中出错:', error);
     return [
       'Checkin Error',
       `${error}`,
-      `<${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}>`,
-    ]
+      `<${process.env.GITHUB_SERVER_URL || ''}/${process.env.GITHUB_REPOSITORY || ''}>`,
+    ];
   }
-}
+};
 
 const notify = async (contents) => {
-  console.log('notify start')
-  const token = process.env.NOTIFY
-  if (!token || !contents) return
+  console.log('notify start');
+  const token = process.env.NOTIFY;
+  if (!token || !contents) {
+    console.log('缺少通知令牌或内容');
+    return;
+  }
   
   try {
     // 使用重试机制进行通知请求
@@ -113,8 +153,8 @@ const notify = async (contents) => {
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({
           token,
-          title: contents[0],
-          content: contents[1],
+          title: contents[0] || 'GLaDOS 通知',
+          content: contents[1] || '无内容',
           template: 'markdown',
         }),
       });
@@ -128,12 +168,12 @@ const notify = async (contents) => {
     
     console.log('通知发送成功');
   } catch (error) {
-    console.log('通知发送失败:', error)
+    console.log('通知发送失败:', error);
   }
-}
+};
 
 const main = async () => {
-  await notify(await glados())
-}
+  await notify(await glados());
+};
 
-main()
+main();
