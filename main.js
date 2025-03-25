@@ -50,6 +50,7 @@ const glados = async () => {
     const headers = {
       'cookie': cookie,
       'referer': 'https://glados.space/console/checkin',
+       "origin": "https://glados.space",
       'user-agent': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)',
     }
     const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
