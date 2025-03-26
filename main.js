@@ -73,20 +73,13 @@ const glados = async () => {
       }
       
       return response.json();
-    });
-
-    // 检查签到响应的完整性
-    if (!checkin || typeof checkin !== 'object') {
-      throw new Error('签到响应格式无效');
-    }
-
-    console.log('签到响应:', JSON.stringify(checkin));
-
-    // 使用重试机制进行 status 请求
+    }).catch(()=>{
+          // 使用重试机制进行 status 请求
     const status = await retryOperation(async () => {
       const response = await fetch('https://glados.space/api/user/checkin', {
-        method: 'GET',
+         method: 'POST',
         headers,
+          body: '{"token":"glados.one"}',
       });
       
       if (!response.ok) {
@@ -95,6 +88,16 @@ const glados = async () => {
       
       return response.json();
     });
+    })
+
+    // 检查签到响应的完整性
+    if (!checkin || typeof checkin !== 'object') {
+      throw new Error('签到响应格式无效');
+    }
+
+    console.log('签到响应:', JSON.stringify(checkin));
+
+
 
     // 安全获取点数，避免未定义错误
     const totalPoint = safeGet(checkin, ['list', 0, 'balance'], 0);
