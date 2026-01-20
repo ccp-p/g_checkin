@@ -65,7 +65,7 @@ const glados = async () => {
       const response = await fetch('https://glados.cloud/api/user/checkin', {
         method: 'POST',
         headers: { ...headers, 'content-type': 'application/json' },
-        body: '{"token":"glados.one"}',
+        body: '{"token":"glados.cloud"}',
       });
       
       if (!response.ok) {
