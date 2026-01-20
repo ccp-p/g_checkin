@@ -49,8 +49,8 @@ const glados = async () => {
   try {
     const headers = {
       'cookie': cookie,
-      'referer': 'https://glados.space/console/checkin',
-       "origin": "https://glados.space",
+      'referer': 'https://glados.cloud/console/checkin',
+       "origin": "https://glados.cloud",
       'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 Edg/134.0.0.0',
     }
     const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
@@ -62,7 +62,7 @@ const glados = async () => {
     
     // 使用重试机制进行 checkin 请求
     const checkin = await retryOperation(async () => {
-      const response = await fetch('https://glados.space/api/user/checkin', {
+      const response = await fetch('https://glados.cloud/api/user/checkin', {
         method: 'POST',
         headers: { ...headers, 'content-type': 'application/json' },
         body: '{"token":"glados.one"}',
@@ -84,7 +84,7 @@ const glados = async () => {
 
        // 使用重试机制进行 status 请求
     const status = await retryOperation(async () => {
-      const response = await fetch('https://glados.space/api/user/status', {
+      const response = await fetch('https://glados.cloud/api/user/status', {
          method: 'GET',
         headers,
           
