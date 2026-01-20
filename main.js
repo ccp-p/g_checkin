@@ -1,5 +1,17 @@
 import { getDaysDiff, getNextEndDate } from './utils.js'
 
+const isTest = false; // 设置为 true 开启测试模式
+
+// 解决 Node.js 低版本缺少 fetch 的问题
+if (typeof fetch === 'undefined') {
+  try {
+    const nodeFetch = (await import('node-fetch')).default;
+    globalThis.fetch = nodeFetch;
+  } catch (e) {
+    if (isTest) console.warn('警告: 当前环境缺少 fetch，建议升级 Node.js 至 v18+ 或安装 node-fetch 包');
+  }
+}
+
 // 重试函数 - 将功能封装到单独的函数中
 async function retryOperation(operation, maxRetries = 3) {
   let lastError = null;
@@ -42,9 +54,16 @@ function safeGet(obj, path, defaultValue = null) {
 }
 
 const glados = async () => {
-  const cookie = process.env.GLADOS
+  let cookie = process.env.GLADOS
   
-  if (!cookie) return ['Missing Cookie', 'Please set GLADOS environment variable'];
+  if (!cookie) {
+    if (isTest) {
+      console.log('测试模式：未检测到 GLADOS 变量，使用测试 Cookie');
+      cookie = 'dummy_cookie_for_test';
+    } else {
+      return ['Missing Cookie', 'Please set GLADOS environment variable'];
+    }
+  }
   
   try {
     const headers = {
@@ -58,7 +77,11 @@ const glados = async () => {
     const oneMinute = 30000
     const randSleep = () => randSleepInRange(oneMinute, 5*oneMinute); // 1 to 5 minutes in milliseconds
 
-    await randSleep()
+    if (!isTest) {
+      await randSleep()
+    } else {
+      console.log('测试模式：跳过等待');
+    }
     
     // 使用重试机制进行 checkin 请求
     const checkin = await retryOperation(async () => {
@@ -175,7 +198,12 @@ const notify = async (contents) => {
 };
 
 const main = async () => {
-  await notify(await glados());
+  const result = await glados();
+  if (isTest) {
+    console.log('测试模式结果:', result);
+  } else {
+    await notify(result);
+  }
 };
 
 main();
